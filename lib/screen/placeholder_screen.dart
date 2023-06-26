@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../model/sport_fact.dart';
 
@@ -7,7 +6,9 @@ class PlaceholderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SportFact fact = facts[Random().nextInt(facts.length)];
+    //final SportFact fact = facts[Random().nextInt(facts.length)];
+    SportFact? fact =
+    ModalRoute.of(context)!.settings.arguments as SportFact ?? facts.first ;
     return Scaffold(
       backgroundColor: Colors.green[800],
       body: SafeArea(

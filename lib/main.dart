@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +9,10 @@ import 'package:sportinfo/bloc/pref_state.dart';
 import 'package:sportinfo/firebase/firebase_remote_config_service.dart';
 import 'package:sportinfo/screen/check_url_screen.dart';
 import 'package:sportinfo/screen/placeholder_screen.dart';
-import 'package:sportinfo/screen/web_view_screen.dart';
+import 'package:sportinfo/screen/sport_list_screen.dart';
 import 'package:sportinfo/shared_pref.dart';
+
+import 'screen/example_webview_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,11 +49,15 @@ class MyApp extends StatelessWidget {
               theme: ThemeData(
                 primarySwatch: Colors.blue,
               ),
+
               home: state.url.isNotEmpty
-                  ? (state.access ? WebViewScreen(targetUrl: state.url)
+                  ? (state.access ?  AviatScreen(save: state.url,)/*WebViewScreen(targetUrl: state.url)*/
                   : const CheckUrlScreen())
-                  : ( checkUrl() ? WebViewScreen(targetUrl: target)
-                  : const PlaceholderScreen() ),
+                  : ( checkUrl() ?  AviatScreen(save: target,)/*WebViewScreen(targetUrl: target)*/
+                  : const SportListScreen() /*const PlaceholderScreen()*/ ),
+            routes: {
+            'PlaceholderScreen': (context) => const PlaceholderScreen(),
+          },
             );
         }
     ),
