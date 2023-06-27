@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "332082040696",
-    "project_id": "sportinfo-16d96",
-    "storage_bucket": "sportinfo-16d96.appspot.com"
+    "project_number": "840942464036",
+    "project_id": "paaag-ff6a9",
+    "storage_bucket": "paaag-ff6a9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:332082040696:android:632c03a71379ac05ab828d",
+        "mobilesdk_app_id": "1:840942464036:android:74c6e76883a7fa38f1fcb1",
         "android_client_info": {
-          "package_name": "com.example.sportinfo"
+          "package_name": "pag.bet.pagbet.apps"
         }
       },
       "oauth_client": [
         {
-          "client_id": "332082040696-efcjmhm3qid938v51c9m792b1is9n1lu.apps.googleusercontent.com",
+          "client_id": "840942464036-p4t2tghh1piakin71rgtvt294m24cosm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBY-wKbbqtoDhAHy8Mh73WM9Sx6KSV3LHc"
+          "current_key": "AIzaSyAS5J0xC96IKvF3ST0MsJU206NchDUkMw0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "332082040696-efcjmhm3qid938v51c9m792b1is9n1lu.apps.googleusercontent.com",
+              "client_id": "840942464036-p4t2tghh1piakin71rgtvt294m24cosm.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

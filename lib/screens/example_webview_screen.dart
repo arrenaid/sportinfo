@@ -1,7 +1,5 @@
-//import 'package:aviator_game/services/save_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:image_picker/image_picker.dart';
 
 class AviatScreen extends StatefulWidget {
   String save;
@@ -51,13 +49,6 @@ class _AviatScreenState extends State<AviatScreen> {
                           action: PermissionRequestResponseAction.GRANT);
                     },
                     onLoadStart:(controller, url) async{
-                      //final ImagePicker picker = ImagePicker();
-                      // Pick an image.
-                      //final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-// Capture a photo.
-                      //final XFile? photo = await picker.pickImage(source: ImageSource.camera);
-
-
                       // String local = await SaveServices.saveSet('load');
                       // if(local.isEmpty){
                       //   SaveServices.saveGet('load', url.toString());
@@ -70,7 +61,7 @@ class _AviatScreenState extends State<AviatScreen> {
                     },
                   ),
                   progress < 1.0
-                      ? Center(
+                      ? const Center(
                       child: CircularProgressIndicator(color: Color.fromARGB(255, 64, 16, 71),)
                   )
                       : Container(),

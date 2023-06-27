@@ -29,6 +29,6 @@ class FirebaseRemoteConfigService{
     }
   }
 
-  String getUrlInfo() => firebaseRemoteConfig.getString('url_info');
+  String getUrlInfo() => firebaseRemoteConfig.getString('url');//url_info
 
 }

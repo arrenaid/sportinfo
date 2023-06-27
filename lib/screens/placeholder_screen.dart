@@ -6,7 +6,6 @@ class PlaceholderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final SportFact fact = facts[Random().nextInt(facts.length)];
     SportFact? fact =
     ModalRoute.of(context)!.settings.arguments as SportFact ?? facts.first ;
     return Scaffold(
@@ -33,7 +32,6 @@ class PlaceholderScreen extends StatelessWidget {
                       child: Stack(
                         children: [
                           Container(
-                            // width: MediaQuery.of(context).size.height/3,
                             height: MediaQuery.of(context).size.height / 2,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(35),
