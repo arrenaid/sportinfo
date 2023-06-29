@@ -10,6 +10,7 @@ import 'package:sportinfo/screens/example_webview_screen.dart';
 import 'package:sportinfo/screens/network_access_error_screen.dart';
 import 'package:sportinfo/screens/placeholder_screen.dart';
 import 'package:sportinfo/screens/sport_list_screen.dart';
+import 'package:sportinfo/shared_pref.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: _getScreen(context, state),
+          home: _getScreen(state),
           routes: {
             'PlaceholderScreen': (context) => const PlaceholderScreen(),
             'error': (context) => const NetworkAccessErrorScreen(),
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  Widget _getScreen(BuildContext context, PrefState state) {
+  Widget _getScreen(PrefState state) {
     try {
       return state.url.isNotEmpty
           ? (state.access
@@ -63,7 +64,13 @@ class MyApp extends StatelessWidget {
               : const NetworkAccessErrorScreen())
           : (state.access
               ? (checkUrl()
-                  ? AviatScreen(save: target)
+                  ? _checkIsCheckVpn()
+                      ? state.isVpn
+                          ? const SportListScreen()
+                          : AviatScreen(save: target)
+                      : state.isEmu
+                          ? const SportListScreen()
+                          : AviatScreen(save: target)
                   : const SportListScreen())
               : const NetworkAccessErrorScreen());
     } catch (e) {
@@ -71,10 +78,16 @@ class MyApp extends StatelessWidget {
     }
   }
 
+  bool _checkIsCheckVpn() {
+    bool isCheckVpn = firebaseRemoteConfigService.getIsCheckVpn();
+    return isCheckVpn;
+  }
+
   bool checkUrl() {
     var urlInfo = firebaseRemoteConfigService.getUrlInfo();
     if (urlInfo.isNotEmpty && urlInfo != "") {
       target = urlInfo;
+      SharedPref().save(target);
       return true;
     } else {
       return false;

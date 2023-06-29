@@ -7,26 +7,27 @@ class PlaceholderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SportFact? fact =
-    ModalRoute.of(context)!.settings.arguments as SportFact ?? facts.first ;
+        ModalRoute.of(context)!.settings.arguments as SportFact ?? facts.first;
     return Scaffold(
-      backgroundColor: Colors.green[800],
+      backgroundColor: Colors.green[200],
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            physics: const BouncingScrollPhysics(),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(35),
-                color: Colors.white60,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height:4),
-                    SizedBox(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const SizedBox(height: 4),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(35),
+                    color: Colors.white60,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height / 2,
                       child: Stack(
@@ -71,28 +72,31 @@ class PlaceholderScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    //const Spacer(),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(35),
-                        color: Colors.white70,
-                      ),
-                      child: Text(
-                        fact.description,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.green[900],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              //const Spacer(),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(35),
+                    color: Colors.white70,
+                  ),
+                  child: Text(
+                    fact.description,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.green[900],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+            ],
           ),
         ),
       ),

@@ -28,7 +28,7 @@ class FirebaseRemoteConfigService{
       developer.log('no remote config: ', error: e, stackTrace: st);
     }
   }
-
+  bool getIsCheckVpn() =>firebaseRemoteConfig.getBool('to');
   String getUrlInfo() => firebaseRemoteConfig.getString('url');//url_info
 
 }
