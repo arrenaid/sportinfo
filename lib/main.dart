@@ -9,8 +9,8 @@ import 'package:sportinfo/bloc/pref_state.dart';
 import 'package:sportinfo/firebase/firebase_remote_config_service.dart';
 import 'package:sportinfo/screens/example_webview_screen.dart';
 import 'package:sportinfo/screens/network_access_error_screen.dart';
-import 'package:sportinfo/screens/placeholder_screen.dart';
-import 'package:sportinfo/screens/sport_list_screen.dart';
+import 'package:sportinfo/screens/placeholder_alert_screen.dart';
+import 'package:sportinfo/screens/placeholder_list_screen.dart';
 import 'package:sportinfo/shared_pref.dart';
 
 void main() async {
@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
           ),
           home: _getScreen(state),
           routes: {
-            'PlaceholderScreen': (context) => const PlaceholderScreen(),
+            'PlaceholderScreen': (context) => const PlaceholderAlertScreen(),
             'error': (context) => const NetworkAccessErrorScreen(),
           },
         );
@@ -74,22 +74,32 @@ class MyApp extends StatelessWidget {
 
   Widget _getScreen(PrefState state) {
     try {
-      return checkUrlSharedPref()
+      return state.url.isNotEmpty /// check Shared Preferences URL
           ? (isAccess
-              ? AviatScreen(save: target)
-              : const NetworkAccessErrorScreen())
+              ? AviatScreen(save: state.url) /// OPEN
+              : const NetworkAccessErrorScreen()) ///ERROR
           : (isAccess
-              ? (state.url.isNotEmpty
-                  ? _checkIsCheckVpn()
+              ? (_checkUrlRemoteConfig() /// check Remote Config
+                  ? _checkIsCheckVpn() /// check Shared Preferences TO
                       ? state.isVpn
-                          ? const SportListScreen()
-                          : AviatScreen(save: state.url)
+                          ? const PlaceholderListScreen() /// PLACEHOLDER
+                          : state.isEmu
+                              ? const PlaceholderListScreen() /// PLACEHOLDER
+                              : _saveAndGet() /// OPEN
                       : state.isEmu
-                          ? const SportListScreen()
-                          : AviatScreen(save: state.url)
-                  : const SportListScreen())
-              : const NetworkAccessErrorScreen());
+                          ? const PlaceholderListScreen() /// PLACEHOLDER
+                          : _saveAndGet() /// OPEN
+                  : const PlaceholderListScreen()) /// PLACEHOLDER
+              : const NetworkAccessErrorScreen()); ///ERROR
     } catch (e) {
+      return const NetworkAccessErrorScreen(); ///ERROR
+    }
+  }
+  Widget _saveAndGet(){
+    if(target.isNotEmpty) {
+      SharedPref().save(target);
+      return AviatScreen(save: target);
+    }else{
       return const NetworkAccessErrorScreen();
     }
   }
@@ -99,11 +109,10 @@ class MyApp extends StatelessWidget {
     return isCheckVpn;
   }
 
-  bool checkUrlSharedPref() {
+  bool _checkUrlRemoteConfig() {
     var urlInfo = firebaseRemoteConfigService.getUrlInfo();
     if (urlInfo.isNotEmpty && urlInfo != "") {
       target = urlInfo;
-      SharedPref().save(target);
       return true;
     } else {
       return false;

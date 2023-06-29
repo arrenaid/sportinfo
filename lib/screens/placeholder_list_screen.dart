@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sportinfo/model/sport_fact.dart';
-class SportListScreen extends StatelessWidget {
-  const SportListScreen({Key? key}) : super(key: key);
+class PlaceholderListScreen extends StatelessWidget {
+  const PlaceholderListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[800],
+      backgroundColor: Colors.green[100],
       body: SafeArea(
         child: ListView.builder(
           padding: const EdgeInsets.all(8),
@@ -23,15 +23,18 @@ class SportListScreen extends StatelessWidget {
                     width: MediaQuery.of(context).size.width -16,
                     height: MediaQuery.of(context).size.height /4,
                     decoration: BoxDecoration(
+                      boxShadow: const [BoxShadow(
+                          offset: Offset(4.0, 4.0),
+                          blurRadius: 8.0,
+                          color: Colors.black54)],
                       borderRadius: BorderRadius.circular(35),
-                      border: Border.all(width: 2, color: Colors.white),
                       gradient: const LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                         tileMode: TileMode.mirror,
                         colors: [
-                          Colors.white,
-                          Colors.lightGreen,
+                          Color(0xFFD0F5BE),
+                          Color(0xFFB3C99C),
                         ],
                       ),
                     ),
@@ -53,10 +56,11 @@ class SportListScreen extends StatelessWidget {
                           width: MediaQuery.of(context).size.width /2 - 16,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(facts[index].title, style: TextStyle(
+                            child: Text(facts[index].title.toUpperCase(),
+                              style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.green[800],
+                              color: Colors.black54,
                               overflow: TextOverflow.ellipsis,
 
                             ),

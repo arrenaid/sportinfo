@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:sportinfo/bloc/pref_event.dart';
 import 'package:sportinfo/bloc/pref_state.dart';
@@ -7,7 +6,7 @@ import 'package:device_info/device_info.dart';
 import 'package:check_vpn_connection/check_vpn_connection.dart';
 
 class PrefBloc extends Bloc<PrefEvent, PrefState> {
-  PrefBloc() : super(PrefState('', false,false)) {
+  PrefBloc() : super(const PrefState('', false,false)) {
     on<PrefEvent>(_onLoad);
   }
   _onLoad(PrefEvent event, Emitter emit) async {
@@ -21,7 +20,6 @@ class PrefBloc extends Bloc<PrefEvent, PrefState> {
     try {
       SharedPref sharedPref = SharedPref();
       String value = await sharedPref.load();
-      print('Shared Preferences load -> $value');
     }catch(e){
       value = "";
     }
