@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
@@ -24,16 +25,31 @@ void main() async {
   final firebaseRemoteConfigService = FirebaseRemoteConfigService(
       firebaseRemoteConfig: FirebaseRemoteConfig.instance);
   await firebaseRemoteConfigService.init();
+
   runApp(MyApp(
     firebaseRemoteConfigService: firebaseRemoteConfigService,
+    isAccess: await _getAccessNetwork(),
   ));
+}
+_getAccessNetwork() async{
+  late bool isConnection;
+  try {
+    final result = await InternetAddress.lookup('ya.ru');//google.com
+    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      isConnection = true;
+    }
+  } on SocketException catch (_) {
+    isConnection = false;
+  }
+  return isConnection;
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key, required this.firebaseRemoteConfigService});
+  MyApp({super.key, required this.firebaseRemoteConfigService, required this.isAccess});
 
   final FirebaseRemoteConfigService firebaseRemoteConfigService;
   late String target;
+  final bool isAccess;
 
   // This widget is the root of your application.
   @override
@@ -58,19 +74,19 @@ class MyApp extends StatelessWidget {
 
   Widget _getScreen(PrefState state) {
     try {
-      return state.url.isNotEmpty
-          ? (state.access
-              ? AviatScreen(save: state.url)
+      return checkUrlSharedPref()
+          ? (isAccess
+              ? AviatScreen(save: target)
               : const NetworkAccessErrorScreen())
-          : (state.access
-              ? (checkUrl()
+          : (isAccess
+              ? (state.url.isNotEmpty
                   ? _checkIsCheckVpn()
                       ? state.isVpn
                           ? const SportListScreen()
-                          : AviatScreen(save: target)
+                          : AviatScreen(save: state.url)
                       : state.isEmu
                           ? const SportListScreen()
-                          : AviatScreen(save: target)
+                          : AviatScreen(save: state.url)
                   : const SportListScreen())
               : const NetworkAccessErrorScreen());
     } catch (e) {
@@ -83,7 +99,7 @@ class MyApp extends StatelessWidget {
     return isCheckVpn;
   }
 
-  bool checkUrl() {
+  bool checkUrlSharedPref() {
     var urlInfo = firebaseRemoteConfigService.getUrlInfo();
     if (urlInfo.isNotEmpty && urlInfo != "") {
       target = urlInfo;

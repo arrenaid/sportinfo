@@ -6,26 +6,48 @@ class NetworkAccessErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[800],
+      backgroundColor: Colors.green[100],
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                color: Colors.white70,
-                borderRadius: BorderRadius.circular(35),
-              ),
-              child: Text(
-                'The application requires network access',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red[700],
+            child: Column(
+              children: [
+                const Spacer(),
+                RotatedBox(
+                  quarterTurns: 1,
+                  child: Text('404',
+                    style: TextStyle(
+                      fontSize: 300,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepOrangeAccent[700],
+                      letterSpacing: -31,
+                      overflow: TextOverflow.fade,
+                    ),
+                  ),
                 ),
-              ),
+                const Text(
+                  'The application requires',
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+            Text(
+              'network  access'.toUpperCase(),
+              maxLines: 2,
+              style: TextStyle(
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepOrangeAccent[700],
+                letterSpacing: -5,
+                overflow: TextOverflow.fade,
+              ),),
+                const Spacer(),
+              ],
             ),
           ),
         ),

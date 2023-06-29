@@ -7,23 +7,13 @@ import 'package:device_info/device_info.dart';
 import 'package:check_vpn_connection/check_vpn_connection.dart';
 
 class PrefBloc extends Bloc<PrefEvent, PrefState> {
-  PrefBloc() : super(PrefState('', false,false,false)) {
+  PrefBloc() : super(PrefState('', false,false)) {
     on<PrefEvent>(_onLoad);
   }
   _onLoad(PrefEvent event, Emitter emit) async {
-    late bool isConnection;
     late String value = "";
     late bool isEmu = false;
     late bool isVpn = false;
-
-    try {
-      final result = await InternetAddress.lookup('ya.ru');//google.com
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        isConnection = true;
-      }
-    } on SocketException catch (_) {
-      isConnection = false;
-    }
 
     isEmu = await _checkIsEmu();
     isVpn = await _vpnActive();
@@ -36,7 +26,7 @@ class PrefBloc extends Bloc<PrefEvent, PrefState> {
       value = "";
     }
 
-    emit(PrefState(value, isConnection, isEmu, isVpn));
+    emit(PrefState(value, isEmu, isVpn));
   }
   _checkIsEmu() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
