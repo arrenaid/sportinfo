@@ -34,7 +34,7 @@ void main() async {
 _getAccessNetwork() async{
   late bool isConnection;
   try {
-    final result = await InternetAddress.lookup('ya.ru');//google.com
+    final result = await InternetAddress.lookup('google.com');//ya.ru
     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
       isConnection = true;
     }

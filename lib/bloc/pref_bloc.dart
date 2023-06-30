@@ -10,16 +10,17 @@ class PrefBloc extends Bloc<PrefEvent, PrefState> {
     on<PrefEvent>(_onLoad);
   }
   _onLoad(PrefEvent event, Emitter emit) async {
-    late String value = "";
-    late bool isEmu = false;
-    late bool isVpn = false;
+    late String value;
+    late bool isEmu;
+    late bool isVpn;
 
     isEmu = await _checkIsEmu();
     isVpn = await _vpnActive();
 
     try {
       SharedPref sharedPref = SharedPref();
-      String value = await sharedPref.load();
+      value = await sharedPref.load();
+      print(value);
     }catch(e){
       value = "";
     }
