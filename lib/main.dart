@@ -1,11 +1,9 @@
 import 'dart:io';
+import 'package:check_vpn_connection/check_vpn_connection.dart';
+import 'package:device_info/device_info.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sportinfo/bloc/pref_bloc.dart';
-import 'package:sportinfo/bloc/pref_event.dart';
-import 'package:sportinfo/bloc/pref_state.dart';
 import 'package:sportinfo/firebase/firebase_remote_config_service.dart';
 import 'package:sportinfo/screens/example_webview_screen.dart';
 import 'package:sportinfo/screens/network_access_error_screen.dart';
@@ -29,6 +27,9 @@ void main() async {
   runApp(MyApp(
     firebaseRemoteConfigService: firebaseRemoteConfigService,
     isAccess: await _getAccessNetwork(),
+    isEmu: await _checkIsEmu(),
+    isVpn: await _vpnActive(),
+    url: await _getSharedPref(),
   ));
 }
 
@@ -45,51 +46,103 @@ _getAccessNetwork() async {
   return isConnection;
 }
 
+_checkIsEmu() async {
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  final em = await deviceInfo.androidInfo;
+
+  var phoneModel = em.model;
+  var buildProduct = em.product;
+  var buildHardware = em.hardware;
+
+  var result = (em.fingerprint.startsWith("generic") ||
+      phoneModel.contains("google_sdk") ||
+      phoneModel.contains("droid4x") ||
+      phoneModel.contains("Emulator") ||
+      phoneModel.contains("Android SDK built for x86") ||
+      em.manufacturer.contains("Genymotion") ||
+      buildHardware == "goldfish" ||
+      buildHardware == "vbox86" ||
+      buildProduct == "sdk" ||
+      buildProduct == "google_sdk" ||
+      buildProduct == "sdk_x86" ||
+      buildProduct == "vbox86p" ||
+      em.brand.contains('google')||
+      em.board.toLowerCase().contains("nox") ||
+      em.bootloader.toLowerCase().contains("nox") ||
+      buildHardware.toLowerCase().contains("nox") ||
+      !em.isPhysicalDevice ||
+      buildProduct.toLowerCase().contains("nox"));
+
+  if (result) return true;
+  result = result ||
+      (em.brand.startsWith("generic") && em.device.startsWith("generic"));
+  if (result) return true;
+  result = result || ("google_sdk" == buildProduct);
+  return result;
+}
+
+_vpnActive () async{
+  if (await CheckVpnConnection.isVpnActive()) {
+    return true;
+  }else{
+    return false;
+  }
+}
+_getSharedPref() async {
+  try {
+    SharedPref sharedPref = SharedPref();
+    String value = await sharedPref.load();
+    print(value);
+    return value;
+  }catch(_){
+    return "";
+  }
+}
+
 class MyApp extends StatelessWidget {
   MyApp(
       {super.key,
       required this.firebaseRemoteConfigService,
-      required this.isAccess});
+      required this.isAccess, required this.isEmu, required this.isVpn,
+        required this.url});
 
   final FirebaseRemoteConfigService firebaseRemoteConfigService;
   late String target;
   final bool isAccess;
+  final bool isEmu;
+  final bool isVpn;
+  final String url;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (BuildContext context) => PrefBloc()..add(PrefEvent()),
-      child: BlocBuilder<PrefBloc, PrefState>(builder: (context, state) {
-        return MaterialApp(
-          title: 'Pag',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          home: _getScreen(state),
-          routes: {
-            'PlaceholderScreen': (context) => const PlaceholderAlertScreen(),
-            'error': (context) => const NetworkAccessErrorScreen(),
-          },
-        );
-      }),
+    return MaterialApp(
+      title: 'Pag',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: _getScreen(),
+      routes: {
+        'PlaceholderScreen': (context) => const PlaceholderAlertScreen(),
+        'error': (context) => const NetworkAccessErrorScreen(),
+      },
     );
   }
 
-  Widget _getScreen(PrefState state) {
+  Widget _getScreen() {
     try {
-      return state.url.isNotEmpty // check Shared Preferences URL
+      return url.isNotEmpty // check Shared Preferences URL
           ? (isAccess
-              ? AviatScreen(save: state.url) // OPEN
+              ? AviatScreen(save: url) // OPEN
               : const NetworkAccessErrorScreen()) //ERROR
           : (isAccess
-              ? (state.isEmu
+              ? (isEmu
                   ? const PlaceholderListScreen() // PLACEHOLDER
                   : (!_checkUrlRemoteConfig() // check Remote Config
                       ? const PlaceholderListScreen() // PLACEHOLDER
                       : !_checkIsCheckVpn() // check Shared Preferences TO
                           ? _saveAndGet() // OPEN
-                          : state.isVpn
+                          : isVpn
                               ? const PlaceholderListScreen() // PLACEHOLDER
                               : _saveAndGet()))// OPEN
               : const NetworkAccessErrorScreen()); //ERROR
