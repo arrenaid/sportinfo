@@ -31,10 +31,11 @@ void main() async {
     isAccess: await _getAccessNetwork(),
   ));
 }
-_getAccessNetwork() async{
+
+_getAccessNetwork() async {
   late bool isConnection;
   try {
-    final result = await InternetAddress.lookup('google.com');//ya.ru
+    final result = await InternetAddress.lookup('google.com'); //ya.ru
     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
       isConnection = true;
     }
@@ -45,7 +46,10 @@ _getAccessNetwork() async{
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key, required this.firebaseRemoteConfigService, required this.isAccess});
+  MyApp(
+      {super.key,
+      required this.firebaseRemoteConfigService,
+      required this.isAccess});
 
   final FirebaseRemoteConfigService firebaseRemoteConfigService;
   late String target;
@@ -74,33 +78,32 @@ class MyApp extends StatelessWidget {
 
   Widget _getScreen(PrefState state) {
     try {
-      return state.url.isNotEmpty /// check Shared Preferences URL
+      return state.url.isNotEmpty // check Shared Preferences URL
           ? (isAccess
-              ? AviatScreen(save: state.url) /// OPEN
-              : const NetworkAccessErrorScreen()) ///ERROR
+              ? AviatScreen(save: state.url) // OPEN
+              : const NetworkAccessErrorScreen()) //ERROR
           : (isAccess
-              ? (_checkUrlRemoteConfig() /// check Remote Config
-                  ? _checkIsCheckVpn() /// check Shared Preferences TO
-                      ? state.isVpn
-                          ? const PlaceholderListScreen() /// PLACEHOLDER
-                          : state.isEmu
-                              ? const PlaceholderListScreen() /// PLACEHOLDER
-                              : _saveAndGet() /// OPEN
-                      : state.isEmu
-                          ? const PlaceholderListScreen() /// PLACEHOLDER
-                          : _saveAndGet() /// OPEN
-                  : const PlaceholderListScreen()) /// PLACEHOLDER
-              : const NetworkAccessErrorScreen()); ///ERROR
+              ? (state.isEmu
+                  ? const PlaceholderListScreen() // PLACEHOLDER
+                  : (!_checkUrlRemoteConfig() // check Remote Config
+                      ? const PlaceholderListScreen() // PLACEHOLDER
+                      : !_checkIsCheckVpn() // check Shared Preferences TO
+                          ? _saveAndGet() // OPEN
+                          : state.isVpn
+                              ? const PlaceholderListScreen() // PLACEHOLDER
+                              : _saveAndGet()))// OPEN
+              : const NetworkAccessErrorScreen()); //ERROR
     } catch (e) {
-      return const NetworkAccessErrorScreen(); ///ERROR
+      return const NetworkAccessErrorScreen(); //ERROR
     }
   }
-  Widget _saveAndGet(){
-    if(target.isNotEmpty) {
+
+  Widget _saveAndGet() {
+    if (target.isNotEmpty) {
       SharedPref().save(target);
       return AviatScreen(save: target);
-    }else{
-      return const NetworkAccessErrorScreen();
+    } else {
+      return const PlaceholderListScreen();
     }
   }
 

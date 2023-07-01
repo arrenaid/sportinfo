@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-const String _sharedUrlKey = 'url_key';
+const String _sharedUrlKey = 'PAG_URL_WAAAAAAG';
 class SharedPref{
 
   Future<void> save(String string) async {
